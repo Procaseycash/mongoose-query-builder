@@ -65,3 +65,10 @@ export const generateFilterDateRange = (value: string[]) => {
     throw new Error('The first date must be lower than the second date.');
   }
 };
+
+export const toSnakeCase = (camelCaseString: string) => {
+  return camelCaseString.replace(
+    /[A-Z]/g,
+    (match) => '_' + match.toLowerCase(),
+  );
+};

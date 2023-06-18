@@ -39,24 +39,24 @@ describe('MongooseQueryBuilder', () => {
       });
 
       const result = MongooseQueryBuilder.generate({
-        user_firstName: 'fola',
+        user_first_name: 'fola',
         user_email: 'fola@gmail.com',
-        user_createdAt: '2023-08-09',
-        user_paymentDate_date_range: '2023-08-09,2023-08-09',
+        user_created_at: '2023-08-09',
+        user_payment_date_date_range: '2023-08-09,2023-08-09',
       });
 
       expect(queryFields).toEqual([
-        'user_firstName',
-        'user_lastName',
+        'user_first_name',
+        'user_last_name',
         'user_email',
-        'user_createdAt',
-        'user_paymentDate_date_range',
+        'user_created_at',
+        'user_payment_date_date_range',
       ]);
       expect(result.dbQueryFields).toEqual([
-        'user_firstName',
+        'user_first_name',
         'user_email',
-        'user_createdAt',
-        'user_paymentDate_date_range',
+        'user_created_at',
+        'user_payment_date_date_range',
       ]);
 
       const startDate = dateFns.startOfDay(new Date('2023-08-09'));
@@ -98,16 +98,16 @@ describe('MongooseQueryBuilder', () => {
       ]);
 
       const result = MongooseQueryBuilder.generate({
-        user_firstName: 'fola',
+        user_first_name: 'fola',
         user_email: 'fola@gmail.com',
       });
 
       expect(queryFields).toEqual([
-        'user_firstName',
-        'user_lastName',
+        'user_first_name',
+        'user_last_name',
         'user_email',
       ]);
-      expect(result.dbQueryFields).toEqual(['user_firstName', 'user_email']);
+      expect(result.dbQueryFields).toEqual(['user_first_name', 'user_email']);
       expect(result.dbQuery).toEqual({
         $and: [
           { firstName: { $in: ['fola'] } },
@@ -139,18 +139,18 @@ describe('MongooseQueryBuilder', () => {
       });
 
       const result = MongooseQueryBuilder.generate({
-        user_firstName: 'fola,segun',
+        user_first_name: 'fola,segun',
         user_status: 'paid,failed',
         user_email: 'fola@gmail.com,bola@gmail.com',
       });
 
       expect(queryFields).toEqual([
-        'user_firstName',
+        'user_first_name',
         'user_status',
         'user_email',
       ]);
       expect(result.dbQueryFields).toEqual([
-        'user_firstName',
+        'user_first_name',
         'user_status',
         'user_email',
       ]);
@@ -240,17 +240,17 @@ describe('MongooseQueryBuilder', () => {
       });
 
       const result = MongooseQueryBuilder.generate({
-        user_friend_firstName: 'fola',
+        user_friend_first_name: 'fola',
         user_friend_email: 'fola@gmail.com',
       });
 
       expect(queryFields).toEqual([
-        'user_friend_firstName',
-        'user_friend_lastName',
+        'user_friend_first_name',
+        'user_friend_last_name',
         'user_friend_email',
       ]);
       expect(result.dbQueryFields).toEqual([
-        'user_friend_firstName',
+        'user_friend_first_name',
         'user_friend_email',
       ]);
       expect(result.dbQuery).toEqual({
@@ -532,7 +532,7 @@ describe('MongooseQueryBuilder', () => {
 
       const result = MongooseQueryBuilder.generate(
         {
-          user_firstName: 'fola',
+          user_first_name: 'fola',
           user_email: 'fola@gmail.com',
           user_search: 'fola fola@gmail.com 200',
         },
@@ -540,14 +540,14 @@ describe('MongooseQueryBuilder', () => {
       );
 
       expect(queryFields).toEqual([
-        'user_firstName',
-        'user_lastName',
+        'user_first_name',
+        'user_last_name',
         'user_email',
         'user_amount',
         'user_search',
       ]);
       expect(result.dbQueryFields).toEqual([
-        'user_firstName',
+        'user_first_name',
         'user_email',
         'user_search',
       ]);

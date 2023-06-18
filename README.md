@@ -7,7 +7,7 @@ This mongoose query builder for application filter, search, match and whatever s
 #### NOTE: 
 1. The default for value in query parameter splitting is `comma` to accommodate multiple clause usage but in case of search, you might want to split by "space" and "comma" etc, the "comma" usage is important to find multiple items at a time by providing the value separated by comma.
 
-2. Always log the register output to know what query paramater field u can define for your APIs per model you defined.
+2. Always log the register output to know what query parameter field u can define for your APIs per model you defined.
 
 ### Simple Case 1
 
@@ -26,7 +26,7 @@ This mongoose query builder for application filter, search, match and whatever s
 
 
  
- // Schema definition for query reister
+ // Schema definition for query register
 
    // This returns array of generated query parameters to use. 
    // You can assign to see the query names.
