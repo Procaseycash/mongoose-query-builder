@@ -73,7 +73,11 @@ export const toSnakeCase = (camelCaseString: string) => {
   );
 };
 
-export const getQueryName = (model: string, fieldName: string, otherSuffix: string = '') => {
+export const getQueryName = (
+  model: string,
+  fieldName: string,
+  otherSuffix: string = '',
+) => {
   return (
     toSnakeCase(model) +
     '_' +
