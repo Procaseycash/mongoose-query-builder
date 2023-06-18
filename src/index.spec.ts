@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import { MongooseQueryBuilder } from './index';
-import { BuildFieldType, BuildPattern } from './type';
+import { BuildFieldType, BuildPattern } from './utils';
 import expect from 'expect';
 
 describe('MongooseQueryBuilder', () => {
@@ -264,9 +264,12 @@ describe('MongooseQueryBuilder', () => {
         ],
       });
 
-      const result = MongooseQueryBuilder.generate({
-        user_search: 'fola fola@gmail.com 200',
-      });
+      const result = MongooseQueryBuilder.generate(
+        {
+          user_search: 'fola fola@gmail.com 200',
+        },
+        ',\\s',
+      );
 
       expect(queryFields).toEqual(['user_search']);
       expect(result.dbQueryFields).toEqual(['user_search']);
@@ -319,9 +322,12 @@ describe('MongooseQueryBuilder', () => {
         },
       ]);
 
-      const result = MongooseQueryBuilder.generate({
-        user_search: 'fola fola@gmail.com 200',
-      });
+      const result = MongooseQueryBuilder.generate(
+        {
+          user_search: 'fola fola@gmail.com 200',
+        },
+        ',\\s',
+      );
 
       expect(queryFields).toEqual(['user_search']);
       expect(result.dbQueryFields).toEqual(['user_search']);
@@ -371,9 +377,12 @@ describe('MongooseQueryBuilder', () => {
         ],
       });
 
-      const result = MongooseQueryBuilder.generate({
-        user_search: 'fola fola@gmail.com 200',
-      });
+      const result = MongooseQueryBuilder.generate(
+        {
+          user_search: 'fola fola@gmail.com 200',
+        },
+        ',\\s',
+      );
 
       expect(queryFields).toEqual(['user_search']);
       expect(result.dbQueryFields).toEqual(['user_search']);
@@ -435,9 +444,12 @@ describe('MongooseQueryBuilder', () => {
         ],
       });
 
-      const result = MongooseQueryBuilder.generate({
-        user_search: 'fola fola@gmail.com 200',
-      });
+      const result = MongooseQueryBuilder.generate(
+        {
+          user_search: 'fola fola@gmail.com 200',
+        },
+        ',\\s',
+      );
 
       expect(queryFields).toEqual(['user_search']);
       expect(result.dbQueryFields).toEqual(['user_search']);
@@ -492,11 +504,14 @@ describe('MongooseQueryBuilder', () => {
         ],
       });
 
-      const result = MongooseQueryBuilder.generate({
-        user_firstName: 'fola',
-        user_email: 'fola@gmail.com',
-        user_search: 'fola fola@gmail.com 200',
-      });
+      const result = MongooseQueryBuilder.generate(
+        {
+          user_firstName: 'fola',
+          user_email: 'fola@gmail.com',
+          user_search: 'fola fola@gmail.com 200',
+        },
+        ',\\s',
+      );
 
       expect(queryFields).toEqual([
         'user_firstName',

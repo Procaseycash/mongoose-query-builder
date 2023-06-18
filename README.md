@@ -1,128 +1,130 @@
-# Mongoose Cross Database Transaction
+# Mongoose Query Builder
 
-This helps with cross db transaction rollback when needed and focus on dependent tree behavior, it is advisable to use single children dependent to avoid situation of one of the list of children failure and only few part are rollback.
-
-## Note
-Always set up `NODE_ENV` and if you are using db connection with non transaction/session support due to no clusters, set `NODE_ENV` to `local`.
+This mongoose query builder for application filter, search, match and whatever simple to complex filter needed on a model defined
 
 ## Example
 
-You can use the repository to view the test case to have clarity on use case but I will provide sample configuration snippet of code here.
-
-I will imagine two operations from different db but does have a reference in the order model but can cross db update, meaning one update in A should affect update B and failure in any to roll back.
-
-We strongly assume each model uses a unique connection as they belong to different DB and model are per each of the database,
-
-Connection passed are of the each model instance uses in the `action` pertaining to where the model in `action` is used, if u have model from different DB, make one the parent action and the other the childrenSession action as dependent and pass it's own db connection.
+NOTE: The default for value in query parameter splitting is `comma` to accommodate multiple clause usage but in case of search, you might want to split by "space" and "comma" etc, the "comma" usage is important to find multiple items at a time by providing the value separated by comma
 
 ### Simple Case 1
 
-The `store` here is the progressive result from each `action` function passed to the next `action` in order at which it is run for dependent parent-children relationship.
-
-Here, only single children for parent and `store[0]` is the result of `action`.
-
 ```$
-      let createdService: Service & any;
+     import mongoose from 'mongoose';
+     import MongooseQueryBuilder from 'mongoose-query-builder';
+     const { Schema } = mongoose;
+     const blogSchema = new Schema({
+       title: String,
+       author: String,
+       comments: [{ body: String, date: Date }],
+     });
+    const Blog = mongoose.model('Blog', blogSchema);
 
-      const transactionConfig: SessionConfig = {
-        connection: this.serviceConnection,
-        action: async (store, session) =>
-          await this.serviceModel.create([newData], { session }),
-        childrenSessions: [
-          {
-            connection: this.keyManagerConnection,
-            action: async (store, session) => {
-              createdService = store[0];
+   // This returns array of generated query parameters to use. 
+   // You can assign to see the query names.
+    MongooseQueryBuilder.register({
+     model: 'blog',
+     fields: [
+      {
+        name: 'title',
+        type: BuildFieldType.STRING,
+        patterns: [BuildPattern.SEARCH],
+     },
+     {
+        name: 'author',
+        type: BuildFieldType.STRING,
+        patterns: [BuildPattern.SEARCH],
+     },
+     {
+        name: 'comments.body',
+        type: BuildFieldType.STRING,
+        patterns: [BuildPattern.SEARCH],
+     },   
+     {
+        name: 'comments.date',
+        type: BuildFieldType.DATE,
+        patterns: [BuildPattern.DATE_RANGE],
+     },     
+     ]
+    })
 
-              const keyPayload: CreateNewKeyType = {
-                key_type: KeyType.SERVICE,
-                entity: 'service',
-                entity_id: createdService._id,
-                apiCode: serviceCode,
-                expiryDate,
-                session,
-              };
-              return await (this.keyManagerModel as any).createNewKey(
-                keyPayload,
-              );
-            },
-          },
-        ],
-      };
+  async findAll(req) {
+    // sample URL looks like https://exampe.com/api/v1/blogs?blog_title=The Begining,Age of war&blog_author=Fola&blog_comments_body=news&blog_comments_date=2023-09-09,2023-09-10
+    const result = MongooseQueryBuilder.generate(req.query);
+    return Blog.find(result.dbQuery);
+  }
 
-      await withTransaction(transactionConfig);
 ```
-
 
 ### Simple Case 2
 
-The `store` here is the progressive result from each `action` function passed to the next `action` in order at which it is run for dependent parent-children relationship.
+Using Exact with boolean, objectId, number, String, date
 
-Here,  we have two parent which are nested and the `store` result are followed in order of `0,1`.
-
-```$
-  const transactionConfig: SessionConfig = {
-            connection: this.keyManagerConnection,
-            action: async (store, session) => {
-              return this.keyManagerModel.findOneAndUpdate(
-                { _id: new Types.ObjectId(keyManager._id.toString()) },
-                {
-                  $set: {
-                    updatedBy: tenant._id,
-                    status: KeyStatus.REFRESHED,
-                  },
-                },
-                { new: true, lean: true, session },
-              );
-            },
-            childrenSessions: [
-              {
-                connection: this.keyManagerConnection,
-                action: async (store, session) => {
-                  return await generateNewKey(
-                    this.keyManagerModel,
-                    KeyType.TENANT_PRODUCT,
-                    'tenant',
-                    new Types.ObjectId(tenant._id),
-                    expiryDate,
-                    'product',
-                    new Types.ObjectId(keyManager.product),
-                    keyManager.apiCode,
-                    session,
-                  );
-                },
-                childrenSessions: [
-                  {
-                    connection: this.tenantConnection,
-                    action: async (store, session) => {
-                     this.tenantModel.updateOne({
-                      _id: store[0].tenant,
-                      type: store[1].manager.type,
-                     }, {name: 'A', data: {sample: 1}}, {session})
-                     
-                  },
-                ],
-              },
-            ],
-          };
-         
-         await withTransaction(transactionConfig);
-
+```$xslt
+ const queryFields = MongooseQueryBuilder.register({
+        model: 'user',
+        fields: [
+          {
+            name: 'business',
+            type: BuildFieldType.OBJECT_ID,
+            patterns: [BuildPattern.EXACT_LIST],
+          },
+          {
+            name: 'status',
+            type: BuildFieldType.BOOLEAN,
+            patterns: [BuildPattern.EXACT_LIST],
+          },
+          {
+            name: 'email',
+            type: BuildFieldType.STRING,
+            patterns: [BuildPattern.EXACT_LIST],
+          },
+          
+          {
+            name: 'amount',
+            type: BuildFieldType.NUMBER,
+            patterns: [BuildPattern.EXACT_LIST],
+          },
+        ],
+      });
+      
 ```
 
 ### Sample case 3
-This type is demonstrated in the repo where we have more than one childrenSession within a single parent rather than nested children
 
-```$
-  {
-   connection,
-   action,
-    childrenSessions: [
-       {connection, action},
+Using mix of Exact and Search with boolean, objectId, number, String, date
+
+```$xslt
+ const queryFields = MongooseQueryBuilder.register({
+        model: 'user',
+        fields: [
+          {
+            name: 'business',
+            type: BuildFieldType.OBJECT_ID,
+            patterns: [BuildPattern.EXACT_LIST],
+          },
+          {
+            name: 'status',
+            type: BuildFieldType.BOOLEAN,
+            patterns: [BuildPattern.EXACT_LIST],
+          },
+          {
+            name: 'email',
+            type: BuildFieldType.STRING,
+            patterns: [BuildPattern.EXACT_LIST, BuildPattern.SEARCH],
+          },
+          
+          {
+            name: 'amount',
+            type: BuildFieldType.NUMBER,
+            patterns: [BuildPattern.EXACT_LIST, BuildPattern.SEARCH],
+          },
+        ],
+      });
       
-       {connection, action},
-    ]
-  }
 ```
 
-The case above does means the parent action can be rollback where one child executing independently failed but case like this might exists where both children are independent but we advise using the dependent approach.
+## Other Notice
+
+Please check the repository for sample test case to support your usage in code.
+
+Thanks!!!

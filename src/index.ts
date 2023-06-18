@@ -6,12 +6,12 @@ import {
   Query,
   QueryGenerator,
   QueryBuilder,
-} from './type';
+} from './utils';
 import {
   generateFilterList,
   generateFilterSearch,
   generateSearchFields,
-} from './helper';
+} from './utils';
 
 export class MongooseQueryBuilder {
   static #queryGenerator: QueryGenerator = {};
@@ -50,7 +50,7 @@ export class MongooseQueryBuilder {
       .flat(Infinity) as string[];
   }
 
-  static generate(query: Query): QueryBuilder {
+  static generate(query: Query, delimiter: string = ','): QueryBuilder {
     const filters: any[] = [];
     const dbQueryFields: string[] = [];
 
@@ -62,7 +62,7 @@ export class MongooseQueryBuilder {
       if (!value) continue;
 
       const valueList = value
-        .split(/[,\s]/g)
+        .split(new RegExp(`[${delimiter}]`, 'gi'))
         .filter((s: string) => !!s)
         .map((s: string) => s.trim());
 
