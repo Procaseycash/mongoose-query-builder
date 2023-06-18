@@ -72,3 +72,12 @@ export const toSnakeCase = (camelCaseString: string) => {
     (match) => '_' + match.toLowerCase(),
   );
 };
+
+export const getQueryName = (model: string, fieldName: string, otherSuffix: string = '') => {
+  return (
+    toSnakeCase(model) +
+    '_' +
+    toSnakeCase(fieldName.trim().replace(/[.]/g, '_')) +
+    otherSuffix
+  );
+};

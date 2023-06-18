@@ -11,6 +11,7 @@ import {
   Query,
   QueryBuilder,
   QueryGenerator,
+  getQueryName,
 } from './utils';
 
 export class MongooseQueryBuilder {
@@ -21,10 +22,7 @@ export class MongooseQueryBuilder {
     const buildSearchFields = generateSearchFields(structure.fields);
     structure.fields.forEach((field: BuildFieldStructure) => {
       if (field.patterns.includes(BuildPattern.EXACT_LIST)) {
-        const queryName =
-          toSnakeCase(structure.model) +
-          '_' +
-          toSnakeCase(field.name.trim().replace(/[.]/g, '_'));
+        const queryName = getQueryName(structure.model, field.name);
         queryFields.push(queryName);
         this.#queryGenerator[queryName] = (filters: any[], value: string[]) => {
           const q =
@@ -39,11 +37,11 @@ export class MongooseQueryBuilder {
         field.patterns.includes(BuildPattern.DATE_RANGE) &&
         field.type === BuildFieldType.DATE
       ) {
-        const queryName =
-          toSnakeCase(structure.model) +
-          '_' +
-          toSnakeCase(field.name.trim().replace(/[.]/g, '_')) +
-          '_date_range';
+        const queryName = getQueryName(
+          structure.model,
+          field.name,
+          '_date_range',
+        );
         queryFields.push(queryName);
         this.#queryGenerator[queryName] = (filters: any[], value: string[]) => {
           filters.push({
@@ -54,7 +52,7 @@ export class MongooseQueryBuilder {
     });
 
     if (buildSearchFields.length > 0) {
-      const queryName = toSnakeCase(structure.model) + '_search';
+      const queryName = getQueryName(structure.model, '_search');
       queryFields.push(queryName);
       this.#queryGenerator[queryName] = (filters: any[], value: string[]) => {
         filters.push({ $or: generateFilterSearch(buildSearchFields, value) });
