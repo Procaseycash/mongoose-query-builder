@@ -52,7 +52,7 @@ export class MongooseQueryBuilder {
     });
 
     if (buildSearchFields.length > 0) {
-      const queryName = getQueryName(structure.model, '_search');
+      const queryName = getQueryName(structure.model, 'search');
       queryFields.push(queryName);
       this.#queryGenerator[queryName] = (filters: any[], value: string[]) => {
         filters.push({ $or: generateFilterSearch(buildSearchFields, value) });
