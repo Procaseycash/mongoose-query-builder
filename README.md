@@ -13,7 +13,7 @@ This mongoose query builder for application filter, search, match and whatever s
 
 ```$
      import mongoose from 'mongoose';
-     import MongooseQueryBuilder from 'mongoose-query-builder';
+     import MongooseQueryBuilder from 'mongoose-query-build';
      import { BuildFieldType, BuildPattern } from 'mongoose-query-builder/utils';
      
      const { Schema } = mongoose;

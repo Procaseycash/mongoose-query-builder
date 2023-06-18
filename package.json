@@ -1,5 +1,5 @@
 {
-  "name": "mongoose-query-builder",
+  "name": "mongoose-query-build",
   "version": "1.0.0",
   "description": "query builder for filter and search use case across application models.",
   "main": "index.js",
@@ -20,11 +20,18 @@
     "query",
     "request",
     "builder",
+    "build",
+    "building",
     "generator",
+    "generating",
+    "generate",
     "search",
     "filter",
+    "filtering",
     "find",
-    "match"
+    "finder",
+    "match",
+    "matcher"
   ],
   "author": "Kazeem Olanipekun <kezyolanipekun@gmail.com>",
   "license": "ISC",
