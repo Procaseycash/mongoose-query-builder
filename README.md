@@ -4,13 +4,18 @@ This mongoose query builder for application filter, search, match and whatever s
 
 ## Example
 
-NOTE: The default for value in query parameter splitting is `comma` to accommodate multiple clause usage but in case of search, you might want to split by "space" and "comma" etc, the "comma" usage is important to find multiple items at a time by providing the value separated by comma
+#### NOTE: 
+1. The default for value in query parameter splitting is `comma` to accommodate multiple clause usage but in case of search, you might want to split by "space" and "comma" etc, the "comma" usage is important to find multiple items at a time by providing the value separated by comma.
+
+2. Always log the register output to know what query paramater field u can define for your APIs per model you defined.
 
 ### Simple Case 1
 
 ```$
      import mongoose from 'mongoose';
      import MongooseQueryBuilder from 'mongoose-query-builder';
+     import { BuildFieldType, BuildPattern } from 'mongoose-query-builder/utils';
+     
      const { Schema } = mongoose;
      const blogSchema = new Schema({
        title: String,
@@ -18,6 +23,10 @@ NOTE: The default for value in query parameter splitting is `comma` to accommoda
        comments: [{ body: String, date: Date }],
      });
     const Blog = mongoose.model('Blog', blogSchema);
+
+
+ 
+ // Schema definition for query reister
 
    // This returns array of generated query parameters to use. 
    // You can assign to see the query names.
@@ -47,6 +56,7 @@ NOTE: The default for value in query parameter splitting is `comma` to accommoda
      ]
     })
 
+  // Service usage 
   async findAll(req) {
     // sample URL looks like https://exampe.com/api/v1/blogs?blog_title=The Begining,Age of war&blog_author=Fola&blog_comments_body=news&blog_comments_date=2023-09-09,2023-09-10
     const result = MongooseQueryBuilder.generate(req.query);
@@ -120,7 +130,6 @@ Using mix of Exact and Search with boolean, objectId, number, String, date
           },
         ],
       });
-      
 ```
 
 ## Other Notice

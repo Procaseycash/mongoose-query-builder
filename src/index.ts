@@ -3,14 +3,13 @@ import {
   BuildFieldType,
   BuildPattern,
   BuildStructure,
-  Query,
-  QueryGenerator,
-  QueryBuilder,
-} from './utils';
-import {
+  generateFilterDateRange,
   generateFilterList,
   generateFilterSearch,
   generateSearchFields,
+  Query,
+  QueryBuilder,
+  QueryGenerator,
 } from './utils';
 
 export class MongooseQueryBuilder {
@@ -28,8 +27,25 @@ export class MongooseQueryBuilder {
           const q =
             field.type === BuildFieldType.BOOLEAN
               ? value[0] === '1' || value[0] === 'true'
+              : field.type === BuildFieldType.DATE
+              ? { $lte: new Date(value[0]) }
               : { $in: generateFilterList(field, value) };
           filters.push({ [field.name]: q });
+        };
+      } else if (
+        field.patterns.includes(BuildPattern.DATE_RANGE) &&
+        field.type === BuildFieldType.DATE
+      ) {
+        const queryName =
+          structure.model +
+          '_' +
+          field.name.trim().replace(/[.]/g, '_') +
+          '_date_range';
+        queryFields.push(queryName);
+        this.#queryGenerator[queryName] = (filters: any[], value: string[]) => {
+          filters.push({
+            [field.name]: generateFilterDateRange(value),
+          });
         };
       }
     });

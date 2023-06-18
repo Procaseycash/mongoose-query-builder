@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import * as dateFns from 'date-fns';
 import {
   BuildFieldStructure,
   BuildFieldType,
@@ -51,3 +52,16 @@ export const generateSearchFields = (fields: BuildFieldStructure[]) => {
     .map((f) => ({ key: f.name, type: f.type }));
 };
 
+export const generateFilterDateRange = (value: string[]) => {
+  const startDate = dateFns.startOfDay(new Date(value[0]));
+  const endDate = dateFns.endOfDay(new Date(value[1]));
+  if (
+    value.length === 2 &&
+    startDate.toISOString().localeCompare(endDate.toISOString()) === -1
+  ) {
+    const dateQuery = { $gte: startDate, $lte: endDate };
+    return dateQuery;
+  } else {
+    throw new Error('The first date must be lower than the second date.');
+  }
+};

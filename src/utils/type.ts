@@ -6,12 +6,14 @@ export type SearchFieldType = {
 export enum BuildPattern {
   EXACT_LIST = 'EXACT_LIST',
   SEARCH = 'SEARCH',
+  DATE_RANGE = 'DATE_RANGE',
 }
 
 export enum BuildFieldType {
   STRING = 'string',
   NUMBER = 'number',
   BOOLEAN = 'boolean',
+  DATE = 'date',
   OBJECT_ID = 'objectId',
 }
 

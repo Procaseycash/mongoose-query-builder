@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import * as dateFns from 'date-fns';
 import { MongooseQueryBuilder } from './index';
 import { BuildFieldType, BuildPattern } from './utils';
 import expect from 'expect';
@@ -24,24 +25,49 @@ describe('MongooseQueryBuilder', () => {
             type: BuildFieldType.STRING,
             patterns: [BuildPattern.EXACT_LIST],
           },
+          {
+            name: 'createdAt',
+            type: BuildFieldType.DATE,
+            patterns: [BuildPattern.EXACT_LIST],
+          },
+          {
+            name: 'paymentDate',
+            type: BuildFieldType.DATE,
+            patterns: [BuildPattern.DATE_RANGE],
+          },
         ],
       });
 
       const result = MongooseQueryBuilder.generate({
         user_firstName: 'fola',
         user_email: 'fola@gmail.com',
+        user_createdAt: '2023-08-09',
+        user_paymentDate_date_range: '2023-08-09,2023-08-09',
       });
 
       expect(queryFields).toEqual([
         'user_firstName',
         'user_lastName',
         'user_email',
+        'user_createdAt',
+        'user_paymentDate_date_range',
       ]);
-      expect(result.dbQueryFields).toEqual(['user_firstName', 'user_email']);
+      expect(result.dbQueryFields).toEqual([
+        'user_firstName',
+        'user_email',
+        'user_createdAt',
+        'user_paymentDate_date_range',
+      ]);
+
+      const startDate = dateFns.startOfDay(new Date('2023-08-09'));
+      const endDate = dateFns.endOfDay(new Date('2023-08-09'));
+
       expect(result.dbQuery).toEqual({
         $and: [
           { firstName: { $in: ['fola'] } },
           { email: { $in: ['fola@gmail.com'] } },
+          { createdAt: { $lte: new Date('2023-08-09') } },
+          { paymentDate: { $gte: startDate, $lte: endDate } },
         ],
       });
     });
