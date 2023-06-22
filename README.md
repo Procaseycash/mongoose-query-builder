@@ -33,7 +33,7 @@ $ npm i mongoose-query-build
 ```ts
      import mongoose from 'mongoose';
      import MongooseQueryBuilder from 'mongoose-query-build';
-     import { BuildFieldType, BuildPattern } from 'mongoose-query-builder/utils';
+     import { BuildFieldType, BuildPattern } from 'mongoose-query-build/utils';
      
      const { Schema } = mongoose;
      const blogSchema = new Schema({
