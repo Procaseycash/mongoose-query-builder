@@ -18,7 +18,7 @@ With the Mongoose Query Builder, you can easily define query fields and their co
 First install [Node.js](http://nodejs.org/) and [MongoDB](https://www.mongodb.org/downloads). Then:
 
 ```sh
-$ npm install mongoose
+$ npm i mongoose-query-build
 ```
 
 ## Example
