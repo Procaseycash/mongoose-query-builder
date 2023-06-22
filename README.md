@@ -1,6 +1,18 @@
 # Mongoose Query Builder
 
-This mongoose query builder for application filter, search, match and whatever simple to complex filter needed on a model defined
+The Mongoose Query Builder is a powerful library designed to simplify the construction of MongoDB queries using Mongoose. It provides a convenient and intuitive way to generate complex queries without the need for manual query building.
+
+With the Mongoose Query Builder, you can easily define query fields and their corresponding patterns, such as exact match, list values, date range, and search. By registering these query fields, you gain the ability to generate MongoDB queries effortlessly based on user input or predefined criteria.
+
+## Key Features
+
+- **Simplified Query Construction**: Constructing complex MongoDB queries becomes straightforward and intuitive with the Query Builder's easy-to-use API.
+- **Pattern-Based Query Generation**: Define patterns for different types of queries, including exact match, list values, date range, and search, allowing for flexible and dynamic query generation.
+- **Customizable and Extensible**: The Query Builder is highly customizable, enabling you to define and register your own query patterns and generators.
+- **Seamless Integration with Mongoose**: Utilize the generated queries seamlessly with Mongoose models, making it a perfect fit for Mongoose-based projects.
+- **Examples and Usage Guide**: The library comes with a comprehensive set of examples and a usage guide to help you get started quickly.
+
+## Documentation
 
 ## Example
 
@@ -11,7 +23,7 @@ This mongoose query builder for application filter, search, match and whatever s
 
 ### Simple Case 1
 
-```$
+```ts
      import mongoose from 'mongoose';
      import MongooseQueryBuilder from 'mongoose-query-build';
      import { BuildFieldType, BuildPattern } from 'mongoose-query-builder/utils';
@@ -69,7 +81,7 @@ This mongoose query builder for application filter, search, match and whatever s
 
 Using Exact with boolean, objectId, number, String, date
 
-```$xslt
+```ts
  const queryFields = MongooseQueryBuilder.register({
         model: 'user',
         fields: [
@@ -103,7 +115,7 @@ Using Exact with boolean, objectId, number, String, date
 
 Using mix of Exact and Search with boolean, objectId, number, String, date
 
-```$xslt
+```ts
  const queryFields = MongooseQueryBuilder.register({
         model: 'user',
         fields: [
