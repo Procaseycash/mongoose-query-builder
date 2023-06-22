@@ -1,6 +1,6 @@
 {
   "name": "mongoose-query-build",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "query builder for filter and search use case across application models.",
   "main": "index.js",
   "scripts": {

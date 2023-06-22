@@ -32,7 +32,7 @@ $ npm i mongoose-query-build
 
 ```ts
      import mongoose from 'mongoose';
-     import MongooseQueryBuilder from 'mongoose-query-build';
+     import { MongooseQueryBuilder } from 'mongoose-query-build';
      import { BuildFieldType, BuildPattern } from 'mongoose-query-build/utils';
      
      const { Schema } = mongoose;
