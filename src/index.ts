@@ -30,11 +30,11 @@ export class MongooseQueryBuilder {
     for (const key in query) {
       if (!query.hasOwnProperty(key)) continue;
 
-      let value = query[key] || '';
+      let value = decodeURIComponent(query[key] || '');
 
       if (!value) continue;
 
-      const valueList = value
+      const valueList: any[] = value
         .split(new RegExp(`[${delimiter}]`, 'gi'))
         .filter((s: string) => !!s)
         .map((s: string) => s.trim());
